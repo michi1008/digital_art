@@ -2,11 +2,13 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import img from "../assets/logo.png";
+import LoginButton from "./LoginButton";
+import LogoutButton from "./LogoutButton";
 import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
 import MenuSharpIcon from "@mui/icons-material/MenuSharp";
+import { useAuth0 } from "@auth0/auth0-react";
 
 const Navbar = () => {
-
   return (
     <Wrapper className="navbarContainer">
       <div className="left">
@@ -17,7 +19,7 @@ const Navbar = () => {
           <MenuSharpIcon />
         </button>
         <div className="navbarLinks">
-        <div className="item">
+          <div className="item">
             <Link to="/products">Products</Link>
           </div>
           <div className="item">
@@ -32,14 +34,14 @@ const Navbar = () => {
         <h2>Ken Lange's Digital Art</h2>
       </div>
       <div className="right">
-        
-
-        
-  
+        <div className="signin">
+          <LoginButton />
+          <LogoutButton />
+        </div>
       </div>
     </Wrapper>
-)
-}
+  );
+};
 
 const Wrapper = styled.section`
 height: 5rem;
