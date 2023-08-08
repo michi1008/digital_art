@@ -4,7 +4,7 @@ export const productAPI = createApi({
   reducerPath: 'productAPI',
   baseQuery: fetchBaseQuery({
     baseUrl: process.env.NODE_ENV === 'production'
-    ? 'https://app.netlify.com/sites/digitalartbyken/.netlify/functions/'
+    ? 'https://digitalartbyken.netlify.app/.netlify/functions/'
     : 'http://localhost:8888/.netlify/functions/'
   }),
   endpoints: (builder) => ({
