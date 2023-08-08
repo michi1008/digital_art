@@ -3,7 +3,9 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 export const productAPI = createApi({
   reducerPath: 'productAPI',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:8888/.netlify/functions/',
+    baseUrl: process.env.NODE_ENV === 'production'
+    ? 'https://app.netlify.com/sites/digitalartbyken/.netlify/functions/'
+    : 'http://localhost:8888/.netlify/functions/'
   }),
   endpoints: (builder) => ({
     fetchProducts: builder.query({
