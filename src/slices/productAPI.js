@@ -15,7 +15,7 @@ export const productAPI = createApi({
       query: (id) => `/single-product?id=${id}`,
     }),
     fetchFeaturedProduct: builder.query({
-      query: () => '/products/?filterByFormula=featured%3Dtrue',
+      query: () => '/products?filterByFormula={featured}=true',
     }),
   }),
 });

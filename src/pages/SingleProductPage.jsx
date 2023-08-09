@@ -1,16 +1,23 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { useFetchSingleProductQuery } from "../slices/productAPI";
 import { formatPrice } from "../utils/helpers";
+import { useDispatch } from "react-redux"
+import { addToCart } from "../slices/cartSlice"
+import AddBoxIcon from "@mui/icons-material/AddBox"
+import IndeterminateCheckBoxIcon from "@mui/icons-material/IndeterminateCheckBox"
 
 const SingleProductPage = () => {
   const { id } = useParams();
-
+  const [quantity, setQuantity] = useState(1)
   const { data, error, isLoading } = useFetchSingleProductQuery(id);
 
-  console.log(data);
+  const [size, setSize] = useState("")
+  const [price, setPrice] = useState(data?.price?.small)
+
+  const dispatch = useDispatch()
 
   return (
     <Wrapper>
@@ -22,32 +29,53 @@ const SingleProductPage = () => {
           {data && (
             <img className="single-product-img" src={data.image[0].url} />
           )}
-          <div className="content">
+           <div className="content">
             {data && (
-              <>
-                <h3>{data?.name}</h3>
+                <>
+                <h2>{data?.attributes?.title}</h2>
                 <div className="price-section">
-                  <p className="sizeP">Small</p>
+                  <h4 className="sizeP">Small</h4>
                   <p className="price">
-                    13" x 19" (33.02 x 48.26cm):{" "}
-                    <span>{formatPrice(data?.small)}</span>
+                    13" x 19" (33.02 x 48.26cm): <span>{formatPrice(data?.small)}</span>
                   </p>
-                  <p className="sizeP">Medium</p>
+                  <h4 className="sizeP">Medium</h4>
                   <p className="price">
-                    18" x 24" (45.72 x 60.96cm):{" "}
-                    <span>{formatPrice(data?.medium)}</span>
+                    18" x 24" (45.72 x 60.96cm): <span>{formatPrice(data?.medium)}</span>
                   </p>
-                  <p className="sizeP">Large</p>
+                  <h4 className="sizeP">Large</h4>
                   <p className="price">
-                    24" x 36" (60.96 x 91.44cm):{" "}
-                    <span>{formatPrice(data?.large)}</span>
+                    24" x 36" (60.96 x 91.44cm): <span>{formatPrice(data?.large)}</span>
                   </p>
                 </div>
-              </>
-            )}
-          </div>
-        </div>
-      </div>
+                  <div className="sizes">
+                    <div>
+                      <button data-size="small" className={`${size === "small"? "size-btn active":"size-btn"}`} onClick={()=>(setSize("small"), setPrice(data.small))}>Small</button>
+                    </div>
+                    <div>
+                      <button data-size="medium" className={`${size === "medium"? "size-btn active":"size-btn"}`} onClick={()=>(setSize("medium"), setPrice(data.medium))}>Medium</button>
+                    </div>
+                    <div>
+                      <button data-size="large" className={`${size === "large"? "size-btn active":"size-btn"}`} onClick={()=>(setSize("large"), setPrice(data.large))}>Large</button>
+                    </div>
+                  </div> </>)}
+              <div className="amount-btns">
+                <button type="button" className="amount-btn"
+                  onClick={() => setQuantity((prev) => (prev === 1 ? 1 : prev - 1))}>
+                <IndeterminateCheckBoxIcon/>
+                </button>
+                <h3>{quantity}</h3>
+                <button type="button" className="amount-btn" 
+                onClick={() => setQuantity((prev) => prev + 1)}>
+                  <AddBoxIcon /></button>
+              </div>
+            <div>
+          <Link to="/cart" className="btn" onClick={()=> dispatch(addToCart( {id:data.id,
+                            image:data.image[0].url,
+                            name:data.name,
+                            price, size, quantity, }))}>Add To Cart</Link></div>
+            </div>
+    </div>
+    </div>
     </Wrapper>
   );
 };

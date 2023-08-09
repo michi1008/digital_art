@@ -1,47 +1,78 @@
-import React from "react";
-import { Link, useNavigate } from "react-router-dom";
-import styled from "styled-components";
-import img from "../assets/logo.png";
-import LoginButton from "./LoginButton";
-import LogoutButton from "./LogoutButton";
-import ShoppingCartIcon from "@mui/icons-material/ShoppingCart";
-import MenuSharpIcon from "@mui/icons-material/MenuSharp";
-import { useAuth0 } from "@auth0/auth0-react";
+import React, { useState, useEffect } from "react"
+import styled from "styled-components"
+import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
+import { Link } from "react-router-dom"
+import { useSelector, useDispatch } from "react-redux"
+import img from "../assets/logo.png"
+import { toggleSidebar } from "../slices/sidebarSlice"
+import MenuSharpIcon from "@mui/icons-material/MenuSharp"
+import LoginButton from "./LoginButton"
+import LogoutButton from "./LogoutButton"
+import { useAuth0 } from "@auth0/auth0-react"
+import Spinner from "../components/Spinner"
+import Error from "../components/Error"
 
 const Navbar = () => {
+
+  const dispatch = useDispatch()
+
+  const toggle = () => {
+    dispatch(toggleSidebar())
+  }
+  
+  const [cartCount, setCartCount] = useState(0)
+  const products = useSelector((state) => state.cart.products)
+  
+  const { isLoading, error } = useAuth0()
+
+  useEffect(() => {
+    setCartCount(products.length)
+  }, [products])
+
+  if (isLoading) {
+    return <Spinner />
+  }
+
+  if (error) {
+    return <Error />
+  }
+
+
   return (
     <Wrapper className="navbarContainer">
-      <div className="left">
-        <Link to="/" className="logo">
-          <img src={img} alt="logo" />
-        </Link>
-        <button type="button" className="nav-toggle">
-          <MenuSharpIcon />
-        </button>
-        <div className="navbarLinks">
-          <div className="item">
-            <Link to="/products">Products</Link>
-          </div>
-          <div className="item">
-            <Link to="/about">About</Link>
-          </div>
-          <div className="item">
-            <Link to="/contact">Contact</Link>
-          </div>
+        <div className="left">
+          <Link to="/" className="logo"><img src={img} alt="" /></Link>
+          <button type="button" className="nav-toggle" onClick={toggle}>
+            <MenuSharpIcon />
+          </button>
+          <div className="navbarLinks">
+          <div className="item"><Link to="/about">About</Link></div>
+          <div className="item"><Link to="/products">Products</Link></div>
+          <div className="item"><Link to="/contact">Contact</Link></div>
+          </div>         
         </div>
-      </div>
-      <div className="center">
-        <h2>Ken Lange's Digital Art</h2>
-      </div>
-      <div className="right">
-        <div className="signin">
-          <LoginButton />
-          <LogoutButton />
+        <div className="center">
+          <h4>Ken Lange's Digital Art</h4>
         </div>
-      </div>
+        <div className="right">
+          <div className="login">
+            {!error && !isLoading && (
+              <>
+                <LoginButton />
+                <LogoutButton />
+              </>
+            )}
+          </div>
+          <div className="icon">
+            <Link to="/cart" className="cartIcon" >
+              <ShoppingCartIcon/>
+              <span>{products.length}</span>
+              </Link>
+            </div>
+          </div>
     </Wrapper>
-  );
-};
+  )
+}
 
 const Wrapper = styled.section`
 height: 5rem;
@@ -73,21 +104,22 @@ img {
 
 .right {
   display: flex;
-  margin-right: 2rem;
   align-items: center;
   justify-content: center;
-  gap: 0.6rem;
+  margin-right: 2rem;
 }
 
 .icon {
   gap: 1rem;
-  color: var(--clr-primary-2);
+  color: var(--clr-black);
   cursor: pointer;
 }
 
 .cartIcon {
   position: relative;
   display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 span {
@@ -126,18 +158,15 @@ span {
   position: -webkit-sticky; /* for Safari */
   position: sticky;
   align-self: flex-start;
-  color: var(--clr-primary-1);
-
+  
   h4 {
-    font-size: 1.2rem;
+    font-size: 1.5rem;
   }
-
   .navbarContainer{
     margin: 0 auto;
     width: 90vw;
     max-width: var(--max-width);
     }
-
   .nav-toggle {
     display: none;
   }
@@ -161,5 +190,5 @@ span {
 
 
 
-`;
-export default Navbar;
+`
+export default Navbar
