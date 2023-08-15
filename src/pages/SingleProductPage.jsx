@@ -1,21 +1,22 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
-import styled from "styled-components";
-import { Link } from "react-router-dom";
+import React, {useState} from "react"
+import { useParams } from "react-router-dom"
 import { useFetchSingleProductQuery } from "../slices/productAPI";
-import { formatPrice } from "../utils/helpers";
+import styled from "styled-components"
+import { Link } from "react-router-dom"
 import { useDispatch } from "react-redux"
-import { addToCart } from "../slices/cartSlice"
+import { addToCart } from "../slices/cartReducer"
+import { formatPrice } from '../utils/helpers'
 import AddBoxIcon from "@mui/icons-material/AddBox"
 import IndeterminateCheckBoxIcon from "@mui/icons-material/IndeterminateCheckBox"
 
-const SingleProductPage = () => {
-  const { id } = useParams();
+const SingleProduct = () => {
+  const { id } = useParams()
   const [quantity, setQuantity] = useState(1)
-  const { data, error, isLoading } = useFetchSingleProductQuery(id);
+ 
+  const { data, error, isLoading } =  useFetchSingleProductQuery(id)
 
   const [size, setSize] = useState("")
-  const [price, setPrice] = useState(data?.price?.small)
+  const [price, setPrice] = useState(parseFloat(data?.small));
 
   const dispatch = useDispatch()
 
@@ -27,12 +28,16 @@ const SingleProductPage = () => {
         </Link>
         <div className="product-center">
           {data && (
-            <img className="single-product-img" src={data.image[0].url} />
+            <img
+              className="single-product-img"
+              src={data?.image[0].url}
+              alt={data?.name}
+            />
           )}
-           <div className="content">
+          <div className="content">
             {data && (
                 <>
-                <h2>{data?.attributes?.title}</h2>
+                <h2>{data?.name}</h2>
                 <div className="price-section">
                   <h4 className="sizeP">Small</h4>
                   <p className="price">
@@ -49,13 +54,13 @@ const SingleProductPage = () => {
                 </div>
                   <div className="sizes">
                     <div>
-                      <button data-size="small" className={`${size === "small"? "size-btn active":"size-btn"}`} onClick={()=>(setSize("small"), setPrice(data.small))}>Small</button>
+                      <button data-size="small" className={`${size === "small"? "size-btn active":"size-btn"}`} onClick={()=>(setSize("small"), setPrice(formatPrice(data?.small)))}>Small</button>
                     </div>
                     <div>
-                      <button data-size="medium" className={`${size === "medium"? "size-btn active":"size-btn"}`} onClick={()=>(setSize("medium"), setPrice(data.medium))}>Medium</button>
+                      <button data-size="medium" className={`${size === "medium"? "size-btn active":"size-btn"}`} onClick={()=>(setSize("medium"), setPrice(formatPrice(data?.medium)))}>Medium</button>
                     </div>
                     <div>
-                      <button data-size="large" className={`${size === "large"? "size-btn active":"size-btn"}`} onClick={()=>(setSize("large"), setPrice(data.large))}>Large</button>
+                      <button data-size="large" className={`${size === "large"? "size-btn active":"size-btn"}`} onClick={()=>(setSize("large"), setPrice(formatPrice(data?.large)))}>Large</button>
                     </div>
                   </div> </>)}
               <div className="amount-btns">
@@ -69,19 +74,25 @@ const SingleProductPage = () => {
                   <AddBoxIcon /></button>
               </div>
             <div>
-          <Link to="/cart" className="btn" onClick={()=> dispatch(addToCart( {id:data.id,
-                            image:data.image[0].url,
+          <Link to="/cart" className="btn" onClick={
+                          ()=> {
+                            console.log(price)
+                            dispatch(addToCart( {id:data.id,
+                            image:data.image,
                             name:data.name,
-                            price, size, quantity, }))}>Add To Cart</Link></div>
+                            price:price,
+                            size:size,
+                            quantity: quantity }))}}>Add To Cart</Link></div>
             </div>
     </div>
     </div>
     </Wrapper>
-  );
-};
-
+    )}
+  
+ 
+ 
+ 
 const Wrapper = styled.section`
-  height: min-content;
 
   .product-center {
     display: grid;
@@ -90,19 +101,18 @@ const Wrapper = styled.section`
   }
   .price {
     color: var(--clr-primary-1);
-    font-size: 0.8rem;
+    font-size : 1.2rem;
   }
   .sizeP {
-    font-size: 0.8rem;
-    font-weight: 500;
-    color: var(--clr-red-dark);
+    font-weight: 700;
+    color: var(--clr-red-dark)
   }
 
   .single-product-img {
-    width: 100%;
-    display: block;
-    object-fit: cover;
-    border-radius: var(--radius);
+  width:100%;
+  display:block;
+  object-fit:cover;
+  border-radius:var(--radius)  
   }
   .sizes {
     display: flex;
@@ -134,13 +144,13 @@ const Wrapper = styled.section`
   .active {
     opacity: 1;
   }
-
+ 
   .btn {
     margin-top: 1rem;
     width: 12.5rem;
     text-align: center;
   }
-  .amount-btns {
+  .amount-btns{
     display: grid;
     width: 8rem;
     justify-items: center;
@@ -169,16 +179,10 @@ const Wrapper = styled.section`
       grid-template-columns: 1fr 1fr;
       align-items: center;
     }
-
-    .sizeP {
-      font-size: 1.25rem;
-      font-weight: 700;
-    }
-
     .price {
-      font-size: 1.5rem;
+      font-size: 1.25rem;
     }
   }
-`;
+`
 
-export default SingleProductPage;
+export default SingleProduct

@@ -1,17 +1,17 @@
 import { configureStore } from '@reduxjs/toolkit';
-import { productAPI } from './slices/productAPI';
-import cartSlice from './slices/cartSlice';
-import sidebarSlice from './slices/sidebarSlice';
+import { productAPI } from './productAPI';
+import cartReducer from './cartReducer';
+import sidebarReducer from './sidebarReducer';
 
 const store = configureStore({
     reducer: {
         [productAPI.reducerPath]: productAPI.reducer,
-        cart: cartSlice.reducer,
-        sidebar: sidebarSlice.reducer,
+        cart: cartReducer,
+        sidebar: sidebarReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(productAPI.middleware),
-    devTools: true
+    devTools: process.env.NODE_ENV !== 'production',
 });
 
 export default store;

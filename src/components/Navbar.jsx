@@ -4,7 +4,7 @@ import ShoppingCartIcon from "@mui/icons-material/ShoppingCart"
 import { Link } from "react-router-dom"
 import { useSelector, useDispatch } from "react-redux"
 import img from "../assets/logo.png"
-import { toggleSidebar } from "../slices/sidebarSlice"
+import { toggleSidebar } from "../slices/sidebarReducer"
 import MenuSharpIcon from "@mui/icons-material/MenuSharp"
 import LoginButton from "./LoginButton"
 import LogoutButton from "./LogoutButton"
@@ -20,14 +20,13 @@ const Navbar = () => {
     dispatch(toggleSidebar())
   }
   
-  const [cartCount, setCartCount] = useState(0)
-  const products = useSelector((state) => state.cart.products)
-  
+  // const [cartCount, setCartCount] = useState(0)
+  // const products = useSelector((state) => state.cart.products)
   const { isLoading, error } = useAuth0()
 
-  useEffect(() => {
-    setCartCount(products.length)
-  }, [products])
+  // useEffect(() => {
+  //   setCartCount(products.length)
+  // }, [products])
 
   if (isLoading) {
     return <Spinner />
@@ -66,7 +65,7 @@ const Navbar = () => {
           <div className="icon">
             <Link to="/cart" className="cartIcon" >
               <ShoppingCartIcon/>
-              <span>{products.length}</span>
+              {/* <span>{products.length}</span> */}
               </Link>
             </div>
           </div>

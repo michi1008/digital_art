@@ -1,16 +1,17 @@
 import React from "react"
 import styled from "styled-components"
-import { removeItem, resetCart } from "../slice/cartSlice"
+import { removeItem, resetCart } from "../slices/cartReducer"
 import { useDispatch, useSelector } from "react-redux"
 import { Link } from "react-router-dom"
-import {loadStripe} from "@stripe/stripe-js"
 import DeleteIcon from "@mui/icons-material/Delete"
 import { useAuth0 } from "@auth0/auth0-react"
 import LoginIcon from '@mui/icons-material/Login'
+import { formatPrice } from '../utils/helpers'
 
 const Cart = () => {
   const products = useSelector((state) => state.cart.products)
-  console.log(state.cart)
+  console.log(products)
+
   const dispatch = useDispatch()
 
   const { user, loginWithRedirect } = useAuth0()
@@ -24,24 +25,24 @@ const Cart = () => {
     return total.toFixed(2)
   }
 
-  const stripePromise = loadStripe(
-    "pk_test_51I8btMGaJApZHHGT8XIO4FcLZLotrfvDkGUPbKmhMeynCmTPgKpDgAcMVRrnSOozjvfh9gUfjBXiz14vnU68PRqG00O9zGJ4qP"
-  )
+  // const stripePromise = loadStripe(
+  //   "pk_test_51I8btMGaJApZHHGT8XIO4FcLZLotrfvDkGUPbKmhMeynCmTPgKpDgAcMVRrnSOozjvfh9gUfjBXiz14vnU68PRqG00O9zGJ4qP"
+  // )
 
-  const handlePayment = async () => {
-    try {
-      const stripe = await stripePromise;
-      const res = await makeRequest.post("/orders", {
-        products,
-      })
-      dispatch(resetCart()) 
-      await stripe.redirectToCheckout({
-        sessionId: res.data.stripeSession.id,
-      })
-    } catch (err) {
-      console.log(err)
-    }
-  }
+  // const handlePayment = async () => {
+  //   try {
+  //     const stripe = await stripePromise;
+  //     const res = await makeRequest.post("/orders", {
+  //       products,
+  //     })
+  //     dispatch(resetCart()) 
+  //     await stripe.redirectToCheckout({
+  //       sessionId: res.data.stripeSession.id,
+  //     })
+  //   } catch (err) {
+  //     console.log(err)
+  //   }
+  // }
 
  
   return (
@@ -49,17 +50,18 @@ const Cart = () => {
     <div className="section section-center">
       <h3>Products in your cart</h3>
       {products?.map((item) => (
+        console.log(item),
         <div key={item.id}>
         <div className="title">
           <h4 className="name">{item.name}</h4>
-          <img src={item.image} alt={item.name} /> 
+          <img src={item.image[0].url} alt={item.name} /> 
         </div>
         <div className="item">
           <div className="item-content">
-          <div className="price"><h4>Price: ${item.price}</h4></div>
+          <div className="price"><h4>Price: {item.price}</h4></div>
           <div className="size"><h4>Size: {item.size}</h4></div>
           <div className="quantity"><h4>Qty: {item.quantity}</h4></div>
-          <div className="subtotal"><h4>Subtotal: ${item.price * item.quantity}</h4></div> 
+          <div className="subtotal"><h4>Subtotal: ${(item.price * item.quantity).toFixed(2)}</h4></div> 
           </div> 
           <div className="item-clear">
             <button type="button" className="link-btn clear-btn" onClick={()=>dispatch(removeItem(item.id))}><DeleteIcon/></button>
@@ -73,9 +75,9 @@ const Cart = () => {
         </Link>        
       </div>   
       <div className="total">
-        <div className="total-display"><h3>Total: ${totalPrice()}</h3></div>
+        <div className="total-display"><h3>Total: {totalPrice()}</h3></div>
         {user? (
-           <button className="checkout-btn" onClick={handlePayment}>PROCEED TO CHECKOUT</button> 
+           <button className="checkout-btn" >PROCEED TO CHECKOUT</button> 
         ) : ( <button type="button" className="auth-btn" onClick={loginWithRedirect}>
         Login <LoginIcon />
       </button>

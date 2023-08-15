@@ -13,8 +13,9 @@ import ProductsPage from "./pages/ProductsPage";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import SingleProductPage from "./pages/SingleProductPage";
+import CartPage from "./pages/CartPage";
 import { Provider } from "react-redux";
-import store from "./store";
+import store from "./slices/store";
 import { Auth0Provider } from "@auth0/auth0-react";
 
 const domain = process.env.REACT_APP_AUTH0_DOMAIN;
@@ -27,10 +28,12 @@ const router = createBrowserRouter(
       <Route path="/about" element={<About />} />
       <Route path="/contact" element={<Contact />} />
       <Route path="/products" element={<ProductsPage />} />
-      <Route path="products/:id" element={<SingleProductPage />} />
+      <Route path="/products/:id" element={<SingleProductPage />} />
+      <Route path="/cart" element={<CartPage />} />
     </Route>
   )
 );
+
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
   <Provider store={store}>
@@ -38,7 +41,7 @@ root.render(
       <Auth0Provider
         domain={domain}
         clientId={clientId}
-        redirectUri={window.location.origin}
+        redirect_uri={window.location.origin}
       >
         <RouterProvider router={router} />
       </Auth0Provider>
