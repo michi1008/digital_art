@@ -20,13 +20,13 @@ const Navbar = () => {
     dispatch(toggleSidebar())
   }
   
-  // const [cartCount, setCartCount] = useState(0)
-  // const products = useSelector((state) => state.cart.products)
+  const [cartCount, setCartCount] = useState(0)
+  const products = useSelector((state) => state.cart.products)
   const { isLoading, error } = useAuth0()
 
-  // useEffect(() => {
-  //   setCartCount(products.length)
-  // }, [products])
+  useEffect(() => {
+    setCartCount(products.length)
+  }, [products])
 
   if (isLoading) {
     return <Spinner />
@@ -65,7 +65,7 @@ const Navbar = () => {
           <div className="icon">
             <Link to="/cart" className="cartIcon" >
               <ShoppingCartIcon/>
-              {/* <span>{products.length}</span> */}
+               <span>{products.length}</span> 
               </Link>
             </div>
           </div>
@@ -104,8 +104,8 @@ img {
 .right {
   display: flex;
   align-items: center;
-  justify-content: center;
-  margin-right: 2rem;
+  justify-content: space-between;
+  margin: 0 2rem;
 }
 
 .icon {
@@ -150,7 +150,7 @@ span {
 }
 
 @media screen and (min-width: 800px){
-  background-color: var(--clr-primary-3);
+  background-color: var(--clr-primary-2);
   top: 0;
   z-index: 100;
   height: 7rem;

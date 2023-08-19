@@ -25,24 +25,6 @@ const Cart = () => {
     return total.toFixed(2)
   }
 
-  // const stripePromise = loadStripe(
-  //   "pk_test_51I8btMGaJApZHHGT8XIO4FcLZLotrfvDkGUPbKmhMeynCmTPgKpDgAcMVRrnSOozjvfh9gUfjBXiz14vnU68PRqG00O9zGJ4qP"
-  // )
-
-  // const handlePayment = async () => {
-  //   try {
-  //     const stripe = await stripePromise;
-  //     const res = await makeRequest.post("/orders", {
-  //       products,
-  //     })
-  //     dispatch(resetCart()) 
-  //     await stripe.redirectToCheckout({
-  //       sessionId: res.data.stripeSession.id,
-  //     })
-  //   } catch (err) {
-  //     console.log(err)
-  //   }
-  // }
 
  
   return (

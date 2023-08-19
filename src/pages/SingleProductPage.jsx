@@ -16,7 +16,7 @@ const SingleProduct = () => {
   const { data, error, isLoading } =  useFetchSingleProductQuery(id)
 
   const [size, setSize] = useState("")
-  const [price, setPrice] = useState(parseFloat(data?.small));
+  const [price, setPrice] = useState(data?.small);
 
   const dispatch = useDispatch()
 
